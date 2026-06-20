@@ -1,5 +1,7 @@
 const express = require("express");
 const multer = require("multer");
+const auth = require("../middleware/authMiddleware");
+const User = require("../models/User");
 
 const Match = require("../models/Match");
 
@@ -22,6 +24,7 @@ const upload = multer({ storage });
 
 router.post(
 "/report",
+auth,
 upload.single("screenshot"),
 async (req,res)=>{
     try {
@@ -31,6 +34,31 @@ async (req,res)=>{
         scoreA,
         scoreB,
       } = req.body;
+      const user =
+  await User.findById(req.user.id);
+
+if (!user) {
+  return res.status(404).json({
+    message: "User Not Found",
+  });
+}
+
+if (user.role !== "captain") {
+  return res.status(403).json({
+    message:
+      "Only captains can report matches",
+  });
+}
+
+if (
+  user.team !== teamA &&
+  user.team !== teamB
+) {
+  return res.status(403).json({
+    message:
+      "You can only report matches involving your team",
+  });
+}
 
       const winner =
         Number(scoreA) > Number(scoreB)

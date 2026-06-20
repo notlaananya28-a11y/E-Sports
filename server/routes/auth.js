@@ -30,6 +30,8 @@ router.post("/register", async (req, res) => {
   username,
   email,
   password: hashedPassword,
+  role,
+  team,
 });
 
     await user.save();
@@ -46,7 +48,13 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {
+  username,
+  email,
+  password,
+  role,
+  team,
+} = req.body;
 
     const user =
       await User.findOne({ email });
@@ -72,6 +80,8 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
 {
   id: user._id,
+  role: user.role,
+  team: user.team,
 },
       process.env.JWT_SECRET,
       {

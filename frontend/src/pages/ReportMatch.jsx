@@ -55,7 +55,7 @@ function ReportMatch() {
 
       const token = localStorage.getItem("token");
 
-await axios.post(
+const res = await axios.post(
   "http://localhost:5000/matches/report",
   formData,
   {
@@ -65,7 +65,7 @@ await axios.post(
   }
 );
 
-      alert(`Winner: ${res.data.winner}`);
+alert(`Winner: ${res.data.winner}`);
 
       setSelectedMatch("");
       setTeamA("");
